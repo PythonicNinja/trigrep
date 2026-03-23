@@ -3,6 +3,12 @@ use trigrep_index::types::{trigram_hash, QueryPlan, TrigramQuery};
 
 /// Decompose a regex pattern into a QueryPlan of trigram lookups.
 pub fn decompose(pattern: &str, case_insensitive: bool) -> QueryPlan {
+    // Case-insensitive queries can't use the raw-byte index effectively
+    // since the index stores original case. Fall back to scanning all files.
+    if case_insensitive {
+        return QueryPlan::MatchAll;
+    }
+
     let hir = match regex_syntax::parse(pattern) {
         Ok(h) => h,
         Err(_) => return QueryPlan::MatchAll,
@@ -194,15 +200,10 @@ mod tests {
     }
 
     #[test]
-    fn test_case_insensitive() {
+    fn test_case_insensitive_falls_back() {
+        // Case-insensitive queries fall back to MatchAll since the index
+        // stores raw bytes and can't efficiently match case-folded trigrams.
         let plan = decompose("Hello", true);
-        match plan {
-            QueryPlan::And(trigrams) => {
-                // Should produce lowercase trigrams
-                let expected = trigram_hash(b'h', b'e', b'l');
-                assert_eq!(trigrams[0].hash, expected);
-            }
-            _ => panic!("Expected And plan"),
-        }
+        assert!(matches!(plan, QueryPlan::MatchAll));
     }
 }
