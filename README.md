@@ -54,6 +54,17 @@ make build
 
 The binary is installed to `~/.cargo/bin/trigrep`.
 
+## GitHub Releases
+
+Pushing a version tag (for example `v0.1.0`) triggers the release workflow in
+`.github/workflows/release.yml`. It builds `trigrep` for Linux, macOS, and
+Windows, packages binaries, and publishes a GitHub Release with those assets.
+
+```bash
+git tag v0.1.0
+git push origin v0.1.0
+```
+
 ## Quick Start
 
 ```bash
