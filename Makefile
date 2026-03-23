@@ -1,4 +1,4 @@
-.PHONY: build release install test check clean fmt lint benchmark
+.PHONY: build release install test check clean fmt lint benchmark version
 
 BENCH_REPO_PATH ?=
 BENCH_REPO_URL ?= https://github.com/git/git.git
@@ -40,3 +40,6 @@ benchmark: release
 	BENCH_WARMUP="$(BENCH_WARMUP)" \
 	BENCH_OUT="$(BENCH_OUT)" \
 	./scripts/benchmark.sh
+
+version:
+	NEW_VERSION="$(NEW_VERSION)" VERSION="$(VERSION)" ./scripts/bump-version.sh

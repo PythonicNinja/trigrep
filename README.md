@@ -43,9 +43,38 @@ workload).
 
 ## Installation
 
+### Install from GitHub Release (macOS/Linux)
+
+```bash
+# Latest release
+curl -fsSL https://raw.githubusercontent.com/PythonicNinja/trigrep/master/scripts/install.sh | bash
+
+# Pin a specific release
+TRIGREP_VERSION=v0.1.0 curl -fsSL https://raw.githubusercontent.com/PythonicNinja/trigrep/master/scripts/install.sh | bash
+```
+
+Installer behavior:
+- default version: latest GitHub release
+- default install path: `/usr/local/bin` if writable, otherwise `~/.local/bin`
+- verifies SHA256 using release `checksums.txt` when available (new releases)
+
+Installer variables:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `TRIGREP_VERSION` | latest release | Specific tag to install (example: `v0.1.0`) |
+| `TRIGREP_INSTALL_DIR` | auto | Override install directory |
+| `TRIGREP_REPO` | `PythonicNinja/trigrep` | Override GitHub repo owner/name |
+
+Windows:
+- download the matching `.zip` from [GitHub Releases](https://github.com/PythonicNinja/trigrep/releases)
+- extract `trigrep.exe` and place it in a directory on your `PATH`
+
+### Build from Source
+
 ```bash
 # From source
-git clone <repo-url> && cd trigrep
+git clone git@github.com:PythonicNinja/trigrep.git && cd trigrep
 make install
 
 # Or build without installing
@@ -58,7 +87,21 @@ The binary is installed to `~/.cargo/bin/trigrep`.
 
 Pushing a version tag (for example `v0.1.0`) triggers the release workflow in
 `.github/workflows/release.yml`. It builds `trigrep` for Linux, macOS, and
-Windows, packages binaries, and publishes a GitHub Release with those assets.
+Windows, packages binaries, generates `checksums.txt`, and publishes a GitHub
+Release with those assets.
+
+Before tagging, bump the project version in all key places:
+
+```bash
+make version NEW_VERSION=0.1.1
+```
+
+Current release targets:
+- `x86_64-unknown-linux-gnu`
+- `aarch64-unknown-linux-gnu`
+- `x86_64-apple-darwin`
+- `aarch64-apple-darwin`
+- `x86_64-pc-windows-msvc`
 
 ```bash
 git tag v0.1.0
