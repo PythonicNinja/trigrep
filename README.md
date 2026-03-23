@@ -20,6 +20,12 @@ Based on the approach described in Cursor's
 
 ## Benchmark
 
+| Tool | Mean (s) | Median (s) | Min (s) | Max (s) | Samples |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| grep | 0.5990 | 0.5550 | 0.3600 | 0.9600 | 20 |
+| ripgrep | 0.0640 | 0.0500 | 0.0500 | 0.1700 | 20 |
+| trigrep | 0.0405 | 0.0500 | 0.0100 | 0.0700 | 20 |
+
 In a real search-only benchmark on `git.git`, trigrep had the lowest mean query
 time: `0.0405s` vs `0.0640s` for `ripgrep` and `0.5990s` for `grep`
 (`~1.58x` faster than ripgrep and `~14.79x` faster than grep for this
@@ -33,12 +39,6 @@ workload).
 - Warmup runs per pattern: 1
 - Patterns: TODO|FIXME, ^#include, struct [A-Za-z_][A-Za-z0-9_]*, parse
 - Scope: search-only (trigrep index built once before timing)
-
-| Tool | Mean (s) | Median (s) | Min (s) | Max (s) | Samples |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| grep | 0.5990 | 0.5550 | 0.3600 | 0.9600 | 20 |
-| ripgrep | 0.0640 | 0.0500 | 0.0500 | 0.1700 | 20 |
-| trigrep | 0.0405 | 0.0500 | 0.0100 | 0.0700 | 20 |
 ```
 
 ## Installation
