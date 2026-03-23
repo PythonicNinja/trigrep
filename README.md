@@ -15,6 +15,9 @@ This keeps search latency almost flat even as your monorepo grows, and makes
 trigrep especially useful for **AI coding agents** and humans who search a lot
 in very large trees.
 
+Based on the approach described in Cursor's
+[Fast regex search: indexing text for agent tools](https://cursor.com/blog/fast-regex-search).
+
 ## Installation
 
 ```bash
