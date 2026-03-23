@@ -156,7 +156,12 @@ fi
 install -m 0755 "${TMP_DIR}/trigrep" "${INSTALL_DIR}/trigrep"
 
 echo "==> Installed to ${INSTALL_DIR}/trigrep"
-"${INSTALL_DIR}/trigrep" --version
+if "${INSTALL_DIR}/trigrep" --version >/dev/null 2>&1; then
+  "${INSTALL_DIR}/trigrep" --version
+else
+  echo "==> Warning: installed binary does not support --version; use 'trigrep --help'" >&2
+  "${INSTALL_DIR}/trigrep" --help >/dev/null
+fi
 
 case ":$PATH:" in
   *":${INSTALL_DIR}:"*) ;;

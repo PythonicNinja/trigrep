@@ -8,7 +8,11 @@ use std::path::PathBuf;
 use clap::{Parser, Subcommand};
 
 #[derive(Parser)]
-#[command(name = "trigrep", about = "Indexed regex search for large codebases")]
+#[command(
+    name = "trigrep",
+    about = "Indexed regex search for large codebases",
+    version
+)]
 struct Cli {
     #[command(subcommand)]
     command: Commands,
