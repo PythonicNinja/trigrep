@@ -18,6 +18,29 @@ in very large trees.
 Based on the approach described in Cursor's
 [Fast regex search: indexing text for agent tools](https://cursor.com/blog/fast-regex-search).
 
+## Benchmark
+
+In a real search-only benchmark on `git.git`, trigrep had the lowest mean query
+time: `0.0405s` vs `0.0640s` for `ripgrep` and `0.5990s` for `grep`
+(`~1.58x` faster than ripgrep and `~14.79x` faster than grep for this
+workload).
+
+```markdown
+- Timestamp (UTC): 2026-03-23T18:01:22Z
+- Source repo: /tmp/trigrep-bench/git
+- Source commit: 6e8d538aab8fe4dd07ba9fb87b5c7edcfa5706ad
+- Runs per pattern: 5
+- Warmup runs per pattern: 1
+- Patterns: TODO|FIXME, ^#include, struct [A-Za-z_][A-Za-z0-9_]*, parse
+- Scope: search-only (trigrep index built once before timing)
+
+| Tool | Mean (s) | Median (s) | Min (s) | Max (s) | Samples |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| grep | 0.5990 | 0.5550 | 0.3600 | 0.9600 | 20 |
+| ripgrep | 0.0640 | 0.0500 | 0.0500 | 0.1700 | 20 |
+| trigrep | 0.0405 | 0.0500 | 0.0100 | 0.0700 | 20 |
+```
+
 ## Installation
 
 ```bash
@@ -43,6 +66,33 @@ trigrep search "fn main" .
 # Check index status
 trigrep status .
 ```
+
+## Run Benchmark Yourself
+
+Use `make benchmark` to compare `grep`, `ripgrep`, and `trigrep` and get a
+Markdown table with timing stats.
+
+```bash
+# Default: clones git.git into /tmp/trigrep-bench/git and benchmarks search time
+make benchmark
+
+# Benchmark any local repository
+make benchmark BENCH_REPO_PATH=/path/to/repo
+```
+
+The benchmark writes Markdown to `/tmp/trigrep-bench/benchmark.md` by default
+and also prints it to stdout.
+
+### Benchmark Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `BENCH_REPO_PATH` | _(unset)_ | Local repo to benchmark. If set, no cloning is done. |
+| `BENCH_REPO_URL` | `https://github.com/git/git.git` | Repo URL used when `BENCH_REPO_PATH` is unset. |
+| `BENCH_REPO_DIR` | `/tmp/trigrep-bench/git` | Clone destination for default benchmark corpus. |
+| `BENCH_RUNS` | `5` | Timed runs per pattern per tool. |
+| `BENCH_WARMUP` | `1` | Warmup runs per pattern per tool. |
+| `BENCH_OUT` | `/tmp/trigrep-bench/benchmark.md` | Output Markdown report path. |
 
 ## Usage
 
