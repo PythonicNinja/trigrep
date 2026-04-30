@@ -99,7 +99,7 @@ fn search_indexed(opts: &SearchOptions, regex: &Regex, root: &Path) -> Result<Ve
     }
 
     // Run regex on candidate files in parallel
-    let matches: Vec<SearchMatch> = candidates
+    let mut matches: Vec<SearchMatch> = candidates
         .par_iter()
         .flat_map(|&file_id| {
             let rel_path = reader.file_path(file_id).to_string();
@@ -111,6 +111,30 @@ fn search_indexed(opts: &SearchOptions, regex: &Regex, root: &Path) -> Result<Ve
         })
         .collect();
 
+    // Path-name matches: regex on every indexed file path. Files that already
+    // have content matches are skipped (no duplicate path-only line).
+    let content_hits: std::collections::HashSet<&str> =
+        matches.iter().map(|m| m.file.as_str()).collect();
+    let path_matches: Vec<SearchMatch> = reader
+        .files
+        .par_iter()
+        .filter_map(|rel_path| {
+            if content_hits.contains(rel_path.as_str()) {
+                return None;
+            }
+            if regex.is_match(rel_path) {
+                Some(SearchMatch {
+                    file: rel_path.clone(),
+                    line_number: 0,
+                    line_content: String::new(),
+                })
+            } else {
+                None
+            }
+        })
+        .collect();
+    matches.extend(path_matches);
+
     Ok(matches)
 }
 
@@ -121,7 +145,15 @@ fn search_brute_force(regex: &Regex, root: &Path) -> Result<Vec<SearchMatch>> {
         .par_iter()
         .flat_map(|entry| {
             let content = String::from_utf8_lossy(&entry.content);
-            search_file_content(&entry.relative_path, &content, regex)
+            let mut hits = search_file_content(&entry.relative_path, &content, regex);
+            if hits.is_empty() && regex.is_match(&entry.relative_path) {
+                hits.push(SearchMatch {
+                    file: entry.relative_path.clone(),
+                    line_number: 0,
+                    line_content: String::new(),
+                });
+            }
+            hits
         })
         .collect();
 

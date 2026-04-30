@@ -107,6 +107,15 @@ fn print_grep_format(
     config: &OutputConfig,
 ) -> io::Result<()> {
     for m in matches {
+        // Path-name match: line_number == 0 -> print bare path (rg --files style).
+        if m.line_number == 0 {
+            if config.color {
+                writeln!(out, "{}", m.file.magenta())?;
+            } else {
+                writeln!(out, "{}", m.file)?;
+            }
+            continue;
+        }
         if config.color {
             write!(out, "{}", m.file.magenta())?;
             if config.line_numbers {
