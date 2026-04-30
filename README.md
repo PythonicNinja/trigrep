@@ -50,7 +50,7 @@ workload).
 curl -fsSL https://raw.githubusercontent.com/PythonicNinja/trigrep/master/scripts/install.sh | bash
 
 # Pin a specific release
-TRIGREP_VERSION=v0.1.1 curl -fsSL https://raw.githubusercontent.com/PythonicNinja/trigrep/master/scripts/install.sh | bash
+TRIGREP_VERSION=v0.1.2 curl -fsSL https://raw.githubusercontent.com/PythonicNinja/trigrep/master/scripts/install.sh | bash
 ```
 
 Installer behavior:
@@ -62,7 +62,7 @@ Installer variables:
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `TRIGREP_VERSION` | latest release | Specific tag to install (example: `v0.1.1`) |
+| `TRIGREP_VERSION` | latest release | Specific tag to install (example: `v0.1.2`) |
 | `TRIGREP_INSTALL_DIR` | auto | Override install directory |
 | `TRIGREP_REPO` | `PythonicNinja/trigrep` | Override GitHub repo owner/name |
 
@@ -85,7 +85,7 @@ The binary is installed to `~/.cargo/bin/trigrep`.
 
 ## GitHub Releases
 
-Pushing a version tag (for example `v0.1.1`) triggers the release workflow in
+Pushing a version tag (for example `v0.1.2`) triggers the release workflow in
 `.github/workflows/release.yml`. It builds `trigrep` for Linux, macOS, and
 Windows, packages binaries, generates `checksums.txt`, and publishes a GitHub
 Release with those assets.
@@ -104,8 +104,8 @@ Current release targets:
 - `x86_64-pc-windows-msvc`
 
 ```bash
-git tag v0.1.1
-git push origin v0.1.1
+git tag v0.1.2
+git push origin v0.1.2
 ```
 
 ## Quick Start
